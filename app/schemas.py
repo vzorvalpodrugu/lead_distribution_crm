@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
 
-# Schames for operator
+# Schemas for operator
 class OperatorBase(BaseModel):
     name: str
     is_active: bool
@@ -23,7 +23,7 @@ class Operator(OperatorBase):
     class Config:
         from_attributes = True
 
-# Schames for lead
+# Schemas for lead
 class LeadBase(BaseModel):
     external_id: str
     phone: Optional[str] = None
