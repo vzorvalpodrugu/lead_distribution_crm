@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
 
-# Schemes for operator
+# Schames for operator
 class OperatorBase(BaseModel):
     name: str
     is_active: bool
@@ -23,7 +23,7 @@ class Operator(OperatorBase):
     class Config:
         from_attributes = True
 
-# Schemes for lead
+# Schames for lead
 class LeadBase(BaseModel):
     external_id: str
     phone: Optional[str] = None
@@ -36,7 +36,7 @@ class Lead(LeadBase):
     class Config:
         from_attributes = True
 
-# Schemes for sourse
+# Schemas for sourse
 class SourceBase(BaseModel):
     name: str
     bot_id: str
@@ -50,7 +50,7 @@ class Sourse(SourceBase):
     class Config:
         from_attributes = True
 
-# Basic schemes for weight operator in source
+# Basic schemas for weight operator in source
 class OperatorSourceWeightBase(BaseModel):
     operator_id: int
     source_id: int
@@ -65,7 +65,7 @@ class OperatorSourceWeigth(OperatorSourceWeightBase):
     class Config:
         from_attributes = True
 
-# Basic schemes for contact
+# Basic schemas for contact
 class ContactBase(BaseModel):
     external_id: str
     phone: Optional[str] = None
@@ -113,3 +113,4 @@ class DistributionStats(BaseModel):
     operator_id: Optional[int] = None
     operator_name: Optional[str] = None
     contact_count: int
+
