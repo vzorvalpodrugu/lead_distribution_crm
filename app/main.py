@@ -34,6 +34,13 @@ def read_operators(skip: int = 0, limit: int = 100,
     operators = crud.get_operators(db, skip=skip, limit=limit)
     return operators
 
+@app.get("/operators/{operator_id}", response_model=schemas.Operator)
+def read_operator(operator_id: int, db: Session = Depends(get_db)):
+    """Get operator by id"""
+    operator = crud.get_operator(db, operator_id=operator_id)
+    if not operator:
+        raise HTTPException(status_code=404, detail="Operator not found")
+    return operator
 
 @app.put("/operators/{operator_id}", response_model=schemas.Operator)
 def update_operator(

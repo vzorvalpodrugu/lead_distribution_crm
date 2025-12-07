@@ -5,7 +5,7 @@ from datetime import datetime
 # Schemas for operator
 class OperatorBase(BaseModel):
     name: str
-    is_active: bool
+    is_active: bool = True
     load_limit: int = 10
 
 class OperatorCreate(OperatorBase):
@@ -36,7 +36,7 @@ class Lead(LeadBase):
     class Config:
         from_attributes = True
 
-# Schemas for sourse
+# Schemas for source
 class SourceBase(BaseModel):
     name: str
     bot_id: str
@@ -44,7 +44,7 @@ class SourceBase(BaseModel):
 class SourceCreate(SourceBase):
     pass
 
-class Sourse(SourceBase):
+class Source(SourceBase):
     id: int
 
     class Config:
@@ -56,10 +56,10 @@ class OperatorSourceWeightBase(BaseModel):
     source_id: int
     weight: int = 1
 
-class OperatorSourceWeightCreate(SourceBase):
+class OperatorSourceWeightCreate(OperatorSourceWeightBase):
     pass
 
-class OperatorSourceWeigth(OperatorSourceWeightBase):
+class OperatorSourceWeight(OperatorSourceWeightBase):
     id: int
 
     class Config:
@@ -84,7 +84,7 @@ class Contact(BaseModel):
     message: Optional[str] = None
     created_at: datetime
     lead: Lead
-    source: Sourse
+    source: Source
     operator: Optional[Operator]
 
     class Config:
@@ -95,7 +95,7 @@ class ContactSimple(BaseModel):
     source_id: int
     operator_id: Optional[int] = None
     created_at: datetime
-    source: Sourse
+    source: Source
     operator: Optional[Operator]
 
     class Config:

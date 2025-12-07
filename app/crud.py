@@ -1,8 +1,7 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 from app import models, schemas
 from app.models import Operator
-
 # CRUD for operator
 def create_operator(db: Session, operator: schemas.OperatorCreate) -> Operator:
     """Create a new operator"""
@@ -16,7 +15,7 @@ def get_operator(db: Session, operator_id: int) -> Optional[Operator]:
     """Get an existing operator"""
     operator_db = (db.query(models.Operator).filter(models.Operator.id == operator_id).first())
     if not operator_db:
-        raise HTTPException(status_code=401, detail="Operator not found")
+        return None
     return operator_db
 
 def get_operators(db: Session, skip: int = 0, limit: int = 100) -> List[Operator]:
@@ -57,21 +56,27 @@ def create_lead(db: Session, lead: schemas.LeadBase):
     db.refresh(db_lead)
     return db_lead
 
+
 def get_or_create_lead(db: Session, external_id: str,
                        phone: Optional[str] = None,
                        email: Optional[str] = None):
-    """Get an existing lead"""
+    # Сначала ищем по external_id
     lead = get_lead_by_external_id(db, external_id)
     if lead:
         return lead
 
+    # Если не нашли по external_id, ищем по телефону
     if phone:
         lead = get_lead_by_phone(db, phone)
         if lead:
             return lead
 
-    lead_data = schemas.LeadBase(external_id=external_id, phone=phone,
-                                 email=email)
+    # Создаем нового лида - ВАЖНО: не передаем None в Pydantic!
+    lead_data = schemas.LeadBase(
+        external_id=external_id,
+        phone=phone,  # Может быть None - это ок
+        email=email  # Может быть None - это ок для Optional[EmailStr]
+    )
     return create_lead(db, lead_data)
 
 

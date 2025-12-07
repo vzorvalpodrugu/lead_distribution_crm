@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -46,7 +46,7 @@ class Contact(Base):
     id = Column(Integer, primary_key=True, index=True)
     lead_id = Column(Integer, ForeignKey('leads.id'))
     source_id = Column(Integer, ForeignKey('sources.id'))
-    operator_id = Column(Integer, ForeignKey('operators.id'), nullable=False)
+    operator_id = Column(Integer, ForeignKey('operators.id'), nullable=True)
     message = Column(String, nullable = False)
     created_at = Column(DateTime(timezone=True), default=func.now())
 
@@ -63,4 +63,10 @@ class OperatorSourceWeight(Base):
     source_id = Column(Integer, ForeignKey('sources.id'))
     weight = Column(Integer, default=1)
 
-    __table_args__ = (('unique_operator_source', 'operator_id', 'source_id'),)
+    __table_args__ = (
+        UniqueConstraint('operator_id', 'source_id',
+                         name='unique_operator_source'),
+    )
+
+    operator = relationship("Operator", back_populates="source_weights")
+    source = relationship("Source", back_populates="operator_weights")
